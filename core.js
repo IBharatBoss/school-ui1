@@ -374,7 +374,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
     // Show the header install button
     if(installBtn) installBtn.classList.remove('hidden');
 
-    // Create and show 3-second Custom Popup Toast
+    // Create and show 1.5-second Custom Popup Toast
     const installToast = document.createElement("div");
     installToast.className = "premium-toast";
     installToast.style.cursor = "pointer";
@@ -382,13 +382,13 @@ window.addEventListener('beforeinstallprompt', (e) => {
     document.getElementById("toast-container").appendChild(installToast);
     lucide.createIcons();
 
-    // Remove popup after 3 seconds automatically
+    // Remove popup after 1.5 seconds automatically
     let toastTimer = setTimeout(() => {
         installToast.classList.add("toast-fade-out");
         setTimeout(() => installToast.remove(), 400);
-    }, 3000);
+    }, 1500);
 
-    // If user clicks the 3-second popup
+    // If user clicks the 1.5-second popup
     installToast.addEventListener('click', async () => {
         clearTimeout(toastTimer);
         installToast.remove();
