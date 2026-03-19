@@ -358,3 +358,62 @@ class UIController {
 document.addEventListener("DOMContentLoaded", () => {
     window.AppUIController = new UIController();
 });
+
+
+// ==========================================
+// PWA CUSTOM INSTALL LOGIC
+// ==========================================
+let deferredPrompt;
+const installBtn = document.getElementById('install-app-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent browser's default mini-infobar
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show the header install button
+    if(installBtn) installBtn.classList.remove('hidden');
+
+    // Create and show 10-second Custom Popup Toast
+    const installToast = document.createElement("div");
+    installToast.className = "premium-toast";
+    installToast.style.cursor = "pointer";
+    installToast.innerHTML = `<i data-lucide="download-cloud" size="18" style="color: var(--accent-color);"></i> <span>Install School AI App for better experience!</span>`;
+    document.getElementById("toast-container").appendChild(installToast);
+    lucide.createIcons();
+
+    // Remove popup after 10 seconds automatically
+    let toastTimer = setTimeout(() => {
+        installToast.classList.add("toast-fade-out");
+        setTimeout(() => installToast.remove(), 400);
+    }, 10000);
+
+    // If user clicks the 10-second popup
+    installToast.addEventListener('click', async () => {
+        clearTimeout(toastTimer);
+        installToast.remove();
+        triggerInstall();
+    });
+});
+
+// If user clicks the persistent header button
+if(installBtn) {
+    installBtn.addEventListener('click', triggerInstall);
+}
+
+async function triggerInstall() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+            if(installBtn) installBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+    }
+}
+
+// Hide button if already installed
+window.addEventListener('appinstalled', () => {
+    if(installBtn) installBtn.classList.add('hidden');
+});
