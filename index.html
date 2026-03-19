@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, interactive-widget=resizes-content, viewport-fit=cover">
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="description" content="AI Help Desk for School - Fast, Intelligent, and Reliable.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="School AI">
+    
+    <link rel="manifest" href="pwa-manifest.json">
+    
+    <title>{{BRAND_NAME}} - School Help Desk</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&family=Geist+Mono:wght@500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode theme-transition">
+
+    <div class="bg-logo-wrapper">
+        <img src="logo.png" alt="Background Logo" class="bg-logo-watermark" loading="lazy" decoding="async">
+    </div>
+
+    <div id="offline-banner" class="offline-banner hidden">
+        <i data-lucide="wifi-off" size="16"></i>
+        <span>Oops! 🤖 I’m currently offline… probably grabbing some digital coffee. Try again in a moment!</span>
+    </div>
+
+    <div id="app-container">
+        
+        <header id="top-header" class="glass-header">
+            <button id="history-toggle" class="icon-btn" aria-label="Open History"><i data-lucide="align-left"></i></button>
+            <div id="home-logo" class="brand-area" title="Navigate to Home Base">
+                <span class="brand-text">{{BRAND_NAME}}</span>
+            </div>
+            <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme"><i data-lucide="moon"></i></button>
+        </header>
+
+        <main id="chat-canvas" class="custom-scroll">
+            <div id="hero-section">
+                <div class="ai-chips-container">
+                    <button class="ai-chip"><i data-lucide="graduation-cap"></i> Admission Process</button>
+                    <button class="ai-chip"><i data-lucide="calendar"></i> Exam Schedules</button>
+                    <button class="ai-chip"><i data-lucide="credit-card"></i> Fee & Payment</button>
+                    <button class="ai-chip"><i data-lucide="book-open"></i> Study Materials</button>
+                    <button class="ai-chip"><i data-lucide="bus"></i> Transport Routes</button>
+                    <button class="ai-chip"><i data-lucide="medal"></i> Sports & Clubs</button>
+                    <button class="ai-chip"><i data-lucide="users"></i> Faculty Directory</button>
+                    <button class="ai-chip"><i data-lucide="bell"></i> Announcements</button>
+                    <button class="ai-chip"><i data-lucide="coffee"></i> Canteen Menu</button>
+                    <button class="ai-chip"><i data-lucide="help-circle"></i> General Help</button>
+                </div>
+            </div>
+            
+            <div id="messages-container" class="hidden"></div>
+            
+            <div id="rag-status-indicator" class="rag-status hidden">
+                <i data-lucide="database" size="14" class="spin-animation"></i>
+                <span>Searching school knowledge base...</span>
+            </div>
+            
+            <div id="loading-indicator" class="loading-container hidden">
+                <div class="liquid-loader">
+                    <div class="loader-bar"></div>
+                    <div class="loader-bar"></div>
+                    <div class="loader-bar"></div>
+                </div>
+                <span class="loading-text" id="loading-status-text">{{LOADING_TEXT}}</span>
+            </div>
+        </main>
+
+        <footer id="bottom-dock">
+            <div id="search-bar-trigger" class="glass-search-bar" role="button" tabindex="0">
+                <div class="search-content">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <div class="typewriter-container">
+                        <span id="typewriter-text" class="placeholder-text"></span><span class="cursor">|</span>
+                    </div>
+                </div>
+                <div class="search-actions">
+                    <button id="dock-mic-btn" class="action-btn" title="Voice Input" aria-label="Voice Input"><i data-lucide="mic"></i></button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div id="sidebar-backdrop" class="modal-backdrop hidden"></div>
+    <aside id="sidebar" class="liquid-sidebar hidden">
+        <div class="sidebar-header">
+            <span class="sidebar-title"><i data-lucide="history" size="18"></i> HISTORY</span>
+            <button id="close-sidebar" class="icon-btn-glass-sm" aria-label="Close Sidebar"><i data-lucide="x" size="18"></i></button>
+        </div>
+        <div id="history-list" class="custom-scroll"></div>
+    </aside>
+
+    <div id="input-popup-backdrop" class="modal-backdrop hidden">
+        <div id="input-popup-sheet" class="apple-sheet glass-morph">
+            <div class="sheet-header">
+                <div class="drag-handle"></div>
+                <div class="sheet-controls">
+                    <button id="rag-kb-toggle" class="mode-badge active-search" title="School Database Search">
+                        <i data-lucide="library" size="14"></i> <span id="rag-kb-label">Knowledge Base: Active</span>
+                    </button>
+                    <button id="close-popup-btn" class="icon-btn-glass-sm" aria-label="Close Input"><i data-lucide="x" size="18"></i></button>
+                </div>
+            </div>
+            
+            <div class="sheet-body">
+                <div id="image-preview-container" class="preview-container hidden">
+                    <img id="image-preview" src="" alt="Selected File" loading="lazy" decoding="async">
+                    <button id="remove-image-btn" class="remove-btn" aria-label="Remove File"><i data-lucide="x" size="14"></i></button>
+                </div>
+                
+                <textarea id="main-textarea" class="custom-scroll" placeholder="Ask anything about the school..."></textarea>
+            </div>
+            
+            <div class="sheet-footer">
+                <div class="footer-left-actions">
+                    <input type="file" id="image-upload-input" accept="image/*,.pdf,.doc,.docx" class="hidden">
+                    <button id="popup-attach-btn" class="icon-btn-solid" title="Attach Document/Image"><i data-lucide="paperclip"></i></button>
+                    <button id="popup-mic-btn" class="icon-btn-solid" title="Voice Input"><i data-lucide="mic"></i></button>
+                    <span id="char-counter" class="char-count-text">0/2000</span>
+                </div>
+                <button id="send-btn" class="send-btn" aria-label="Send Message"><i data-lucide="arrow-up" size="22"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('PWA ServiceWorker registered successfully');
+                }).catch(err => {
+                    console.log('PWA ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+
+    <script src="manifest.js"></script>
+    <script src="core.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
